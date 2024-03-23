@@ -2,6 +2,11 @@ package com.monadic.products.controller;
 
 import com.monadic.products.dto.HealthResponse;
 import com.monadic.products.service.HealthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +24,14 @@ public class HealthController {
     }
 
     @GetMapping
+    @Operation(summary = "Get health information")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Health information retrieved", content = {@Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = HealthResponse.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error"),
+    })
     public ResponseEntity<HealthResponse> checkHealth() {
         String dbConnection = healthService.getDbStatus();
         String version = healthService.getAppVersion();
