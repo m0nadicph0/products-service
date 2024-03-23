@@ -2,10 +2,11 @@ plugins {
     java
     id("org.springframework.boot") version "3.2.4"
     id("io.spring.dependency-management") version "1.1.4"
+    id("org.ajoberstar.grgit") version "5.0.0-rc.3"
 }
 
 group = "com.monadic"
-version = "0.0.1-SNAPSHOT"
+version = getGitVersion()
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -33,4 +34,10 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+fun getGitVersion(): String {
+    val tag = grgit.tag.list().firstOrNull() ?: "0.0.1"
+    val sha = grgit.head().abbreviatedId ?: "SNAPSHOT"
+    return "$tag-$sha"
 }
