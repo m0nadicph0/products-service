@@ -4,6 +4,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.4"
     id("org.ajoberstar.grgit") version "5.0.0-rc.3"
     id("org.flywaydb.flyway") version "10.10.0"
+    id("jacoco")
 }
 
 group = "com.monadic"
@@ -37,6 +38,8 @@ flyway {
     password = "s3cr3t"
     cleanDisabled = false
 }
+
+
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
