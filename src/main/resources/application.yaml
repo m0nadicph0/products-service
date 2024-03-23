@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: products-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/products
+    username: products
+    password: s3cr3t
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+server:
+  port: 8080
