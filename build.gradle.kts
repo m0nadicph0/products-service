@@ -3,6 +3,7 @@ plugins {
     id("org.springframework.boot") version "3.2.4"
     id("io.spring.dependency-management") version "1.1.4"
     id("org.ajoberstar.grgit") version "5.0.0-rc.3"
+    id("org.flywaydb.flyway") version "10.10.0"
 }
 
 group = "com.monadic"
@@ -20,6 +21,21 @@ configurations {
 
 repositories {
     mavenCentral()
+}
+
+buildscript {
+    dependencies {
+        classpath("org.postgresql:postgresql:42.7.3")
+        classpath("org.flywaydb:flyway-database-postgresql:10.10.0")
+    }
+}
+
+
+flyway {
+    url = "jdbc:postgresql://localhost:5432/products"
+    user = "products"
+    password = "s3cr3t"
+    cleanDisabled = false
 }
 
 dependencies {
