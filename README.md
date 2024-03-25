@@ -40,3 +40,9 @@ curl --location --request GET 'http://localhost:8080/products/ef58c3cd-174b-45ec
 curl --location --request DELETE 'http://localhost:8080/products/ef58c3cd-174b-45ec-bfbe-9ba242ad0493' \
 --header 'Content-Type: application/json'
 ```
+
+# Build
+
+```shell
+export $(xargs <.env)
+```

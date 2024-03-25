@@ -1,4 +1,3 @@
-import org.unbrokendome.gradle.plugins.testsets.dsl.testSets
 
 plugins {
     java
@@ -8,6 +7,7 @@ plugins {
     id("org.flywaydb.flyway") version "10.10.0"
     id("jacoco")
     id("org.unbroken-dome.test-sets") version "4.1.0"
+    id("com.google.cloud.tools.jib") version "3.4.1"
 }
 
 group = "com.monadic"
@@ -20,6 +20,31 @@ java {
 configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
+    }
+}
+
+jib {
+    from {
+        image = "amazoncorretto:17-alpine3.17"
+    }
+    container {
+        environment = mapOf(
+            "DB_URL" to System.getenv("DB_URL"),
+            "DB_USER" to System.getenv("DB_USER"),
+            "DB_PASSWORD" to System.getenv("DB_PASSWORD")
+        )
+        ports = listOf("8080")
+        entrypoint = listOf("java", "-jar", "${rootProject.name}-${version}.jar")
+        workingDirectory = "/app"
+    }
+    extraDirectories {
+        paths {
+            path {
+                setFrom(file("build/libs").toPath())
+                into = "/app"
+                includes = listOf("${rootProject.name}-${version}.jar")
+            }
+        }
     }
 }
 
@@ -36,11 +61,12 @@ buildscript {
 
 
 flyway {
-    url = "jdbc:postgresql://localhost:5432/products"
-    user = "products"
-    password = "s3cr3t"
+    url = System.getenv("DB_URL")
+    user = System.getenv("DB_USER")
+    password = System.getenv("DB_PASSWORD")
     cleanDisabled = false
 }
+
 
 
 
@@ -76,6 +102,12 @@ tasks.register("sourceSets") {
         for (ss in sourceSets) {
             println("${ss.name}: ${ss.allSource.srcDirs}")
         }
+    }
+}
+
+tasks.register("printJarInfo") {
+    doLast{
+        println("Jar file: ${rootProject.name}-${version}.jar")
     }
 }
 fun getGitVersion(): String {
